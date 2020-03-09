@@ -1,2 +1,16 @@
-# AI-Matchmaker
-Matchmaking profiles using Machine Learning
+# AI Matchmaker
+Utilizing AI and Machine Learning to match dating profiles with one another
+
+## Medium Articles Detailing the Process
+
+#### Original Concept and Idea
+- [Applying Machine Learning to Find Love](https://medium.com/datadriveninvestor/applying-machine-learning-to-find-love-3558dafcc4a1?source=friends_link&sk=a1caa632bdff516a6e132477543f271c)
+
+#### Data Gathering and Generation
+- [Generating Fake Dating Profiles for Data Science](https://towardsdatascience.com/generating-fake-dating-profiles-for-data-science-cd3b929972bc?source=friends_link&sk=7b2423cf197b7e54d4a13e47a2101b10)
+
+#### NLP Data Exploration and Analysis
+- [Using NLP Machine Learning on Dating Profiles](https://medium.com/swlh/using-nlp-machine-learning-on-dating-profiles-1d9328484e85?source=friends_link&sk=9c099e59191f6b862812ac8828a9970e)
+
+#### Final Clustering Algorithm and Development
+- [Dating Algorithms using Machine Learning and AI](https://towardsdatascience.com/dating-algorithms-using-machine-learning-and-ai-814b68ecd75e?source=friends_link&sk=867b08aba0b761f510205c6ab13b012c)
