@@ -14,3 +14,6 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 
 #### Final Clustering Algorithm and Development
 - [Dating Algorithms using Machine Learning and AI](https://towardsdatascience.com/dating-algorithms-using-machine-learning-and-ai-814b68ecd75e?source=friends_link&sk=867b08aba0b761f510205c6ab13b012c)
+
+#### Sorting the Clustered Groups
+- [Sorting Dating Profiles with Machine Learning and Python](https://medium.com/@marcosan93/sorting-dating-profiles-with-machine-learning-and-python-51db7a074a25?source=friends_link&sk=635a049cc1c45c4a9cefa4e68be44b33)
