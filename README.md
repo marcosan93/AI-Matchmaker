@@ -17,3 +17,6 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 
 #### Sorting the Clustered Groups
 - [Sorting Dating Profiles with Machine Learning and Python](https://medium.com/@marcosan93/sorting-dating-profiles-with-machine-learning-and-python-51db7a074a25?source=friends_link&sk=635a049cc1c45c4a9cefa4e68be44b33)
+
+#### Adding New Data to the Clusters
+- [How a Dating App Handles New Profiles (Part 1)](https://medium.com/@marcosan93/how-a-dating-app-handles-new-profiles-part-1-d283ab2457c?source=friends_link&sk=f5247dae53da93fbcc642e78fa1ddfd9)
