@@ -12,9 +12,10 @@ import _pickle as pickle
 with open("clustered_profiles.pkl",'rb') as fp:
     df = pickle.load(fp)
     
+# Loading the Classification Model
+model = load("clf_model.joblib")
     
-    
-    
+      
 ## Fitting the Vectorizer and Scaler to the Data
 X = df.drop(["Cluster #"], 1)
 
@@ -66,7 +67,7 @@ def top_ten(cluster, new_profile):
     Returns the DataFrame containing the top 10 similar profiles to the new data
     """
     # Filtering out the clustered DF
-    des_cluster = cluster_df[cluster_df['Cluster #']==designated_cluster[0]]
+    des_cluster = df[df['Cluster #']==cluster[0]]
     
     # Appending the new profile data
     des_cluster = des_cluster.append(new_profile, sort=False)
@@ -92,5 +93,32 @@ def top_ten(cluster, new_profile):
     return df.drop('Cluster #', 1).loc[top_10_sim.index]
 
 
+## Interactive Section
+st.title("AI-MatchMaker")
+
+st.markdown("Find your Top 10 Profiles:")
+
+# Instantiating a new DF row to append later
+new_profile = pd.DataFrame(columns=raw_df.columns)
+
+# Asking for new profile data
+new_profile['Bios'] = st.text_input("Enter a Bio for yourself: ")
+
+# Adding random values for new data
+for i in new_profile.columns[1:]:
+    new_profile[i] = np.random.randint(0,10,1)
+
+# Indexing that new profile data
+new_profile.index = [raw_df.index[-1] + 1]
+
+
+# Formatting the New Data
+new_df = prep_new_data(new_profile)
+
+cluster = model.predict(new_df)
+
+top_10_df = top_ten(cluster, new_profile)
+
+st.dataframe(top_10_df)
 
 
