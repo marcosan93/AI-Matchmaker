@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import MinMaxScaler
 import streamlit as st
 import _pickle as pickle
+from random import sample
 
 # Loading the Profiles
 with open("clustered_profiles.pkl",'rb') as fp:
@@ -23,7 +24,7 @@ X = df.drop(["Cluster #"], 1)
 vectorizer = CountVectorizer()
 
 # Fitting the vectorizer to the Bios
-x = vectorizer.fit_transform(X['Bios'])
+x = vectorizer.fit_transform(X['Bios'].values.astype('U'))
 
 # Creating a new DF that contains the vectorized words
 df_wrds = pd.DataFrame(x.toarray(), columns=vectorizer.get_feature_names())
@@ -46,19 +47,19 @@ def prep_new_data(new_df):
     """
     Scales and vectorizes the new data by using the previously fitted scaler and vectorizer then 
     returns that new DF
-    """
+    """    
     # Vectorizing the new data
-    vect_new_prof = vectorizer.transform(new_df['Bios'])
+    vect_new_prof = vectorizer.transform(new_df['Bios'].values.astype('U'))
 
     # Quick DF of the vectorized words
-    new_vect_w = pd.DataFrame(vect_new_prof.toarray(), columns=vectorizer.get_feature_names(), index=new_profile.index)
+    new_vect_w = pd.DataFrame(vect_new_prof.toarray(), columns=vectorizer.get_feature_names(), index=new_df.index)
 
     # Concatenating the DFs for the new profile data
-    new_vect_prof = pd.concat([new_profile, new_vect_w], 1).drop('Bios', 1)
+    new_vect_prof = pd.concat([new_df, new_vect_w], 1).drop('Bios', 1)
 
     # Scaling the new profile data
     new_vect_prof = pd.DataFrame(scaler.transform(new_vect_prof), columns=new_vect_prof.columns, index=new_vect_prof.index)
-    
+
     return new_vect_prof
 
 
@@ -73,7 +74,7 @@ def top_ten(cluster, new_profile):
     des_cluster = des_cluster.append(new_profile, sort=False)
 
     # Fitting the vectorizer to the Bios
-    cluster_x = vectorizer.fit_transform(des_cluster['Bios'])
+    cluster_x = vectorizer.fit_transform(des_cluster['Bios'].values.astype('U'))
 
     # Creating a new DF that contains the vectorized words
     cluster_v = pd.DataFrame(cluster_x.toarray(), index=des_cluster.index, columns=vectorizer.get_feature_names())
@@ -90,35 +91,63 @@ def top_ten(cluster, new_profile):
     # Creating a DF with the Top 10 most similar profiles
     top_10_sim = corr[[user_n]].sort_values(by=[user_n],axis=0, ascending=False)[1:11]
     
-    return df.drop('Cluster #', 1).loc[top_10_sim.index]
+    # The Top Profiles
+    top_10 = df.drop('Cluster #', 1).loc[top_10_sim.index]
+    
+    # Converting the floats to ints
+    top_10[top_10.columns[1:]] = top_10[top_10.columns[1:]].astype(int)
+    
+    return top_10
 
 
 ## Interactive Section
 st.title("AI-MatchMaker")
 
-st.markdown("Find your Top 10 Profiles:")
+st.markdown("Finding your Top 10 Profiles")
 
 # Instantiating a new DF row to append later
-new_profile = pd.DataFrame(columns=raw_df.columns)
+new_profile = pd.DataFrame(columns=df.drop('Cluster #', 1).columns, index=[df.index[-1]+1])
 
+# Example Bios for the user
+st.write("-"*100)
+st.text("Example Bios:")
+for i in sample(list(df.index), 3):
+    st.text(df['Bios'].loc[i])
+st.write("-"*100)
+    
 # Asking for new profile data
 new_profile['Bios'] = st.text_input("Enter a Bio for yourself: ")
 
-# Adding random values for new data
-for i in new_profile.columns[1:]:
-    new_profile[i] = np.random.randint(0,10,1)
+random_vals = st.checkbox("Check here if you would like random values for yourself")
 
-# Indexing that new profile data
-new_profile.index = [raw_df.index[-1] + 1]
+if random_vals:
+    # Adding random values for new data
+    for i in new_profile.columns[1:]:
+        new_profile[i] = np.random.randint(0,10,1)
 
+else:
+    for i in new_profile.columns[1:]:
+        new_profile[i] = st.selectbox(f"Select value for {i}", [i for i in range(10)])
 
-# Formatting the New Data
-new_df = prep_new_data(new_profile)
+button = st.button("Click to find your Top 10!")
 
-cluster = model.predict(new_df)
+if button:    
+    with st.spinner('Finding your Top 10 Matches'):
+        # Formatting the New Data
+        new_df = prep_new_data(new_profile)
+        
+        # Predicting/Classifying the new data
+        cluster = model.predict(new_df)
 
-top_10_df = top_ten(cluster, new_profile)
+        # Finding the top 10 related profiles
+        top_10_df = top_ten(cluster, new_profile)
 
-st.dataframe(top_10_df)
+        # Displaying the Top 10 similar profiles
+        st.dataframe(top_10_df, width=10000)
 
+    # Success message   
+    st.success("Found your Top 10!")    
+    st.balloons()
+
+    
 
