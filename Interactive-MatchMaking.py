@@ -8,6 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 import streamlit as st
 import _pickle as pickle
 from random import sample
+from PIL import Image
 
 # Loading the Profiles
 with open("clustered_profiles.pkl",'rb') as fp:
@@ -105,8 +106,15 @@ st.title("AI-MatchMaker")
 
 st.markdown("Finding your Top 10 Profiles")
 
+image = Image.open('robot_matchmaker.jpg')
+
+st.image(image, use_column_width=True)
+
 # Instantiating a new DF row to append later
 new_profile = pd.DataFrame(columns=df.drop('Cluster #', 1).columns, index=[df.index[-1]+1])
+
+# Asking for new profile data
+new_profile['Bios'] = st.text_input("Enter a Bio for yourself: ")
 
 # Example Bios for the user
 st.write("-"*100)
@@ -115,9 +123,6 @@ for i in sample(list(df.index), 3):
     st.text(df['Bios'].loc[i])
 st.write("-"*100)
     
-# Asking for new profile data
-new_profile['Bios'] = st.text_input("Enter a Bio for yourself: ")
-
 random_vals = st.checkbox("Check here if you would like random values for yourself")
 
 if random_vals:
@@ -145,9 +150,9 @@ if button:
         # Displaying the Top 10 similar profiles
         st.dataframe(top_10_df, width=10000)
 
-    # Success message   
-    st.success("Found your Top 10!")    
-    st.balloons()
+        # Success message   
+        st.success("Found your Top 10!")    
+        st.balloons()
 
     
 
