@@ -20,3 +20,5 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 
 #### Adding New Data to the Clusters
 - [How a Dating App Handles New Profiles (Part 1)](https://medium.com/@marcosan93/how-a-dating-app-handles-new-profiles-part-1-d283ab2457c?source=friends_link&sk=f5247dae53da93fbcc642e78fa1ddfd9)
+
+- [How a Dating App Handles New Profiles (Part 2)](https://medium.com/@marcosan93/how-a-dating-app-handles-new-profiles-part-2-fca4f13b5205?source=friends_link&sk=6900fbd85340231ecac7f9ba571454ec)
