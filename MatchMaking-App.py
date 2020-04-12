@@ -15,9 +15,14 @@ from scipy.stats import halfnorm
 with open("refined_profiles.pkl",'rb') as fp:
     df = pickle.load(fp)
     
+with open("refined_cluster.pkl", 'rb') as fp:
+    cluster_df = pickle.load(fp)
+    
+with open("vectorized_refined.pkl", 'rb') as fp:
+    vect_df = pickle.load(fp)
+    
 # Loading the Classification Model
 model = load("refined_model.joblib")
-
 
 ## Helper Functions
 
@@ -31,15 +36,16 @@ def string_convert(x):
         return x
  
     
-def prep_data(df, columns, input_df):
+def vectorization(df, columns, input_df):
     """
     Using recursion, iterate through the df until all the categories have been vectorized
     """
 
     column_name = columns[0]
-    
+        
     # Checking if the column name has been removed already
     if column_name not in ['Bios', 'Movies','Religion', 'Music', 'Politics', 'Social Media', 'Sports']:
+                
         return df, input_df
     
     # Encoding columns with respective values
@@ -51,9 +57,11 @@ def prep_data(df, columns, input_df):
         # Dictionary for the codes
         d = dict(enumerate(df[column_name].cat.categories))
         
+        d = {v: k for k, v in d.items()}
+                
         # Getting labels for the input_df
-        input_df[column_name.lower()] = input_df[column_name].map(d)
-        
+        input_df[column_name.lower()] = d[input_df[column_name].iloc[0]]
+                
         # Dropping the column names
         input_df = input_df.drop(column_name, 1)
         
@@ -67,14 +75,14 @@ def prep_data(df, columns, input_df):
         vectorizer = CountVectorizer()
         
         # Fitting the vectorizer to the columns
-        x = vectorizer.fit_transform(df[column_name])
+        x = vectorizer.fit_transform(df[column_name].values.astype('U'))
         
-        y = vectorizer.transform(input_df[column_name])
+        y = vectorizer.transform(input_df[column_name].values.astype('U'))
 
         # Creating a new DF that contains the vectorized words
         df_wrds = pd.DataFrame(x.toarray(), columns=vectorizer.get_feature_names())
         
-        y_wrds = pd.DataFrame(y.toarray(), columns=vectorizer.get_feature_names())
+        y_wrds = pd.DataFrame(y.toarray(), columns=vectorizer.get_feature_names(), index=input_df.index)
 
         # Concating the words DF with the original DF
         new_df = pd.concat([df, df_wrds], axis=1)
@@ -98,46 +106,37 @@ def scaling(df, input_df):
     scaler.fit(df)
     
     input_vect = pd.DataFrame(scaler.transform(input_df), index=input_df.index, columns=input_df.columns)
-    
+        
     return input_vect
     
 
 
-def top_ten(cluster, new_profile):
+def top_ten(cluster, vect_df, input_vect):
     """
     Returns the DataFrame containing the top 10 similar profiles to the new data
     """
     # Filtering out the clustered DF
-    des_cluster = df[df['Cluster #']==cluster[0]]
+    des_cluster = vect_df[vect_df['Cluster #']==cluster[0]].drop('Cluster #', 1)
     
     # Appending the new profile data
-    des_cluster = des_cluster.append(new_profile, sort=False)
-
-    # Fitting the vectorizer to the Bios
-    cluster_x = vectorizer.fit_transform(des_cluster['Bios'].values.astype('U'))
-
-    # Creating a new DF that contains the vectorized words
-    cluster_v = pd.DataFrame(cluster_x.toarray(), index=des_cluster.index, columns=vectorizer.get_feature_names())
-
-    # Joining the Vectorized DF to the previous DF and dropping columns
-    des_cluster = des_cluster.join(cluster_v).drop(['Bios', 'Cluster #'], axis=1)
+    des_cluster = des_cluster.append(input_vect, sort=False)
+        
+    # Finding the Top 10 similar or correlated users to the new user
+    user_n = input_vect.index[0]
     
     # Trasnposing the DF so that we are correlating with the index(users) and finding the correlation
-    corr = des_cluster.T.corr()
-
-    # Finding the Top 10 similar or correlated users to the new user
-    user_n = new_profile.index[0]
+    corr = des_cluster.T.corrwith(des_cluster.loc[user_n])
 
     # Creating a DF with the Top 10 most similar profiles
-    top_10_sim = corr[[user_n]].sort_values(by=[user_n],axis=0, ascending=False)[1:11]
-    
+    top_10_sim = corr.sort_values(ascending=False)[1:11]
+        
     # The Top Profiles
-    top_10 = df.drop('Cluster #', 1).loc[top_10_sim.index]
-    
+    top_10 = df.loc[top_10_sim.index]
+        
     # Converting the floats to ints
-    top_10[top_10.columns[1:]] = top_10[top_10.columns[1:]].astype(int)
+    top_10[top_10.columns[1:]] = top_10[top_10.columns[1:]]
     
-    return top_10
+    return top_10.astype('object')
 
 
 def example_bios():
@@ -336,11 +335,12 @@ if random_vals:
             new_profile[i] = halfnorm.rvs(loc=18,scale=8, size=1).astype(int)
             
         else:
-            new_profile[name] = list(np.random.choice(combined[i], size=1, p=p[name]))
+            new_profile[i] = list(np.random.choice(combined[i], size=(1,3), p=p[i]))
             
-            new_profile[name] = new_profile[name].apply(lambda x: list(set(x[0].tolist())))
+            new_profile[i] = new_profile[i].apply(lambda x: list(set(x.tolist())))
 
 else:
+    # Manually inputting the data
     for i in new_profile.columns[1:]:
         if i in ['Religion', 'Politics']:  
             new_profile[i] = st.selectbox(f"Enter your choice for {i}:", combined[i])
@@ -349,19 +349,24 @@ else:
             new_profile[i] = st.slider("What is your age?", 18, 50)
             
         else:
-            new_profile[name] = st.multiselect(f"What is your preferred choice for {i}?\n(Pick up to 3)", combined[i])
+            options = st.multiselect(f"What is your preferred choice for {i}? (Pick up to 3)", combined[i])
             
-            new_profile[name] = new_profile[name].apply(lambda x: list(set(x[0].tolist())))
+            # Assigning the list to a specific row
+            new_profile.at[new_profile.index[0], i] = options
+            
+            new_profile[i] = new_profile[i].apply(lambda x: list(set(x)))
             
             
-# Looping through the columns and applying the string_convert() function
+# Looping through the columns and applying the string_convert() function (for vectorization purposes)
 for col in df.columns:
     df[col] = df[col].apply(string_convert)
     
     new_profile[col] = new_profile[col].apply(string_convert)
             
 
-# Displaying the User's Profile        
+# Displaying the User's Profile 
+st.write("-"*1000)
+st.write("Your profile:")
 st.table(new_profile)
 
 # Push to start the matchmaking process
@@ -369,14 +374,17 @@ button = st.button("Click to find your Top 10!")
 
 if button:    
     with st.spinner('Finding your Top 10 Matches...'):
-        # Formatting the New Data
-        new_df = prep_new_data(new_profile)
-        
+        # Vectorizing the New Data
+        df_v, input_df = vectorization(df, df.columns, new_profile)
+                
+        # Scaling the New Data
+        new_df = scaling(df_v, input_df)
+                
         # Predicting/Classifying the new data
         cluster = model.predict(new_df)
-
+        
         # Finding the top 10 related profiles
-        top_10_df = top_ten(cluster, new_profile)
+        top_10_df = top_ten(cluster, vect_df, new_df)
         
         # Success message   
         st.success("Found your Top 10 Most Similar Profiles!")    
@@ -384,6 +392,7 @@ if button:
 
         # Displaying the Top 10 similar profiles
         st.table(top_10_df)
+        
 
         
 
