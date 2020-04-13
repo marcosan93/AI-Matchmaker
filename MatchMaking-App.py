@@ -141,7 +141,7 @@ def top_ten(cluster, vect_df, input_vect):
 
 def example_bios():
     """
-    Creates a list of randome example bios from the original dataset
+    Creates a list of random example bios from the original dataset
     """
     # Example Bios for the user
     st.write("-"*100)
