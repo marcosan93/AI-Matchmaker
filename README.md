@@ -22,3 +22,6 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 - [How a Dating App Handles New Profiles (Part 1)](https://medium.com/@marcosan93/how-a-dating-app-handles-new-profiles-part-1-d283ab2457c?source=friends_link&sk=f5247dae53da93fbcc642e78fa1ddfd9)
 
 - [How a Dating App Handles New Profiles (Part 2)](https://medium.com/@marcosan93/how-a-dating-app-handles-new-profiles-part-2-fca4f13b5205?source=friends_link&sk=6900fbd85340231ecac7f9ba571454ec)
+
+#### Using Streamlit to Display the App
+- [How to Use Streamlit to Create Web Applications](https://medium.com/@marcosan93/how-to-use-streamlit-to-create-web-applications-218af44064f5?source=friends_link&sk=18229bf1aa3c5d8eba4d9a479c6c5cd4)
