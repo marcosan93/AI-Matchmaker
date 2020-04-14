@@ -1,7 +1,7 @@
 # AI Matchmaker
 Utilizing AI and Machine Learning to match dating profiles with one another
 
-![](robot_matchmaker.jpg)
+![](AI-Dating-App/robot_matchmaker.jpg)
 
 ## Medium Articles Detailing the Process
 
