@@ -4,5 +4,5 @@ pandas
 numpy
 sklearn
 streamlit
---upgrade Pillow
+Pillow
 scipy
