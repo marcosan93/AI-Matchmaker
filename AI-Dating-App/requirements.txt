@@ -1,0 +1,8 @@
+### These are the Libraries needed to run the app ###
+joblib
+pandas
+numpy
+sklearn
+streamlit
+--upgrade Pillow
+scipy
