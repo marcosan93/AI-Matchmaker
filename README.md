@@ -1,6 +1,8 @@
 # AI Matchmaker
 Utilizing AI and Machine Learning to match dating profiles with one another
 
+[The AI MatchMaker App Website](http://52.91.45.65:8501)
+
 ![](AI-Dating-App/robot_matchmaker.jpg)
 
 ## Medium Articles Detailing the Process
@@ -27,3 +29,6 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 
 #### Using Streamlit to Display the App
 - [How to Use Streamlit to Create Web Applications](https://medium.com/@marcosan93/how-to-use-streamlit-to-create-web-applications-218af44064f5?source=friends_link&sk=18229bf1aa3c5d8eba4d9a479c6c5cd4)
+
+#### Deploying the Streamlit App with AWS
+- [Creating a Website to Host your Python Web Application](https://medium.com/@marcosan93/creating-a-website-to-host-your-python-web-application-f06f694a87e8?source=friends_link&sk=029c7240dc72d462bcb1e3b14e8f7849)
