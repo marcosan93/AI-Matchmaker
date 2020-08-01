@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 # Creating the class object
-class createProfile:
+class CreateProfile:
     
     def __init__(self, dataset=pd.DataFrame(), profile=pd.DataFrame()):
         """
@@ -78,7 +78,7 @@ class createProfile:
         
         profile_feats = self.profile.columns
                 
-        # Check to see if the profile profile contains the same features as the larger profile
+        # Check to see if the new profile features contain the same features as the larger profile
         if dataset_feats.all()==profile_feats.all():
             
             # Appending the profile the larger profile
