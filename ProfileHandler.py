@@ -27,7 +27,12 @@ class CreateProfile:
         if type(profile) != pd.core.frame.DataFrame:
             
             # Initializing a new DF for the new profile with a new index or user number
-            self.profile = pd.DataFrame(index=[dataset.index[-1] + 1])
+            try:
+                self.profile = pd.DataFrame(index=[self.dataset.index[-1] + 1])
+                
+            # If starting from an empty DF
+            except:
+                self.profile = pd.DataFrame(index=[0])
             
         else:
             # Using the given profile
