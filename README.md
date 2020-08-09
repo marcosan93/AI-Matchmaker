@@ -32,3 +32,6 @@ Utilizing AI and Machine Learning to match dating profiles with one another
 
 #### Deploying the Streamlit App with AWS
 - [Creating a Website to Host your Python Web Application](https://medium.com/@marcosan93/creating-a-website-to-host-your-python-web-application-f06f694a87e8?source=friends_link&sk=029c7240dc72d462bcb1e3b14e8f7849)
+
+#### Using Class to Add/Format a New Profile
+- [Enhance your Python Project Code with Classes](https://towardsdatascience.com/enhance-your-python-project-code-with-classes-5a19d0e9f841?source=friends_link&sk=f16512c9abfabf4b73e993952bc3250b)
