@@ -3,22 +3,28 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import MinMaxScaler
 
 
-
 # Creating the class object
 class CreateProfile:
     
-    def __init__(self, dataset=pd.DataFrame(), profile=pd.DataFrame()):
+    def __init__(self, dataset=None, profile=None):
         """
         Using a given DF of profiles, creates a new profile based on information from that given DF
         
         If profile already given, allows formatting of that profile
         """
         
-        # Initializing instances of the smaller profile profile and the larger profile
-        self.dataset = dataset
+        # Checking if we have DFs in our arguments
+        
+        # Initializing instances of the smaller profile DF and the larger DF
+        if type(dataset) != pd.core.frame.DataFrame:
+            
+            self.dataset = pd.DataFrame()
+            
+        else:
+            self.dataset = dataset
                 
         # Handling the profile
-        if profile.empty:
+        if type(profile) != pd.core.frame.DataFrame:
             
             # Initializing a new DF for the new profile with a new index or user number
             self.profile = pd.DataFrame(index=[dataset.index[-1] + 1])
@@ -78,7 +84,7 @@ class CreateProfile:
         
         profile_feats = self.profile.columns
                 
-        # Check to see if the new profile features contain the same features as the larger profile
+        # Check to see if the profile profile contains the same features as the larger profile
         if dataset_feats.all()==profile_feats.all():
             
             # Appending the profile the larger profile
@@ -165,6 +171,5 @@ class CreateProfile:
         
         # Return the formatted profile DF
         return self.formatted_profile
-
 
 
