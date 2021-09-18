@@ -1,7 +1,7 @@
 # AI Matchmaker
 Utilizing AI and Machine Learning to match dating profiles with one another
 
-[The AI MatchMaker App Website Hosted on an AWS Instance](http://52.91.45.65:8501)
+### [My Medium Page](https://marco-santos.medium.com/membership)
 
 ![](AI-Dating-App/robot_matchmaker.jpg)
 
